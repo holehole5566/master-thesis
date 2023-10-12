@@ -8,9 +8,10 @@ sheets = ["tempo", "rms_mean", "stft_pitches_mean", "zcr_mean"]
 for sheet in sheets:
     df = pd.read_excel("gen_happy.xlsx", sheet_name = sheet)
     series = df[sheet]
-    #series, lam = stats.boxcox(df[sheet])
-    #series = pd.DataFrame(series, columns=[sheet])[sheet]
-    # skew, kury, shapiro
+    '''
+    series, lam = stats.boxcox(df[sheet])
+    series = pd.DataFrame(series, columns=[sheet])[sheet]
+    '''
     skewness = round(series.skew(), 2)
     kurtosis = round(series.kurt(), 2)
     res = stats.shapiro(series)
