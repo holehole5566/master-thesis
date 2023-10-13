@@ -4,6 +4,9 @@ import numpy as np
 from pydub import AudioSegment
 import librosa
 
+col_name = ['tempo','rms_mean','rms_var','stft_pitches_mean','stft_pitches_var','zcr_mean','zcr_var']
+mood_list = ["happy", "relaxed", "sad", "angry"]
+
 def feature_1d(file):
     try:
         y, sr = librosa.load(file)
@@ -49,42 +52,38 @@ def feature_1d(file):
 
     return np.array(f)
 
-writer = pd.ExcelWriter("gen_relaxed.xlsx", engine = 'xlsxwriter')
+def get_music_files(dir):
+    data = os.listdir(dir)
+    file_dir = []
+    count = 0
+    for audio in data:
+        count += 1
+        if(audio[-3:] == 'wav' or audio[-3:] == 'mp3'):
+            fn=os.path.join(dir,audio)
+            file_dir.append(fn)
+            print(count, fn)
+    return file_dir, count
 
-dir25 = "gen_music/relaxed"
-data25 = os.listdir(dir25)
-file_dir25 = []
-count = 0
-for audio in data25:
-    count += 1
-    if(audio[-3:] =='wav'):
-        fn=os.path.join(dir25,audio)
-        file_dir25.append(fn)
-        print(count, fn)
-size = count
-features1 = np.zeros((size,7))
-count = 0
-for i in range(0,size):
-    count += 1
-    features1[i] = feature_1d(file_dir25[i])
-    print(count, "finished")
+def extract_features(file_dir, size):
+    features = np.zeros((size,7))
+    for i in range(0, size):
+        features[i] = feature_1d(file_dir[i])
+    return features
 
-feature1 = pd.DataFrame()
-col_name = ['tempo','rms_mean','rms_var','stft_pitches_mean','stft_pitches_var','zcr_mean','zcr_var']
-mood = []
-for i in range(len(file_dir25)):
-    mood.append("angry")
+def get_moods(size, mood):
+    moods = []
+    for i in range(len(file_dir)):
+        moods.append(mood)
+    return moods
 
-feature1['file'] = file_dir25
-feature1['mood'] = mood
-for i in range(len(col_name)):
-    feature1[col_name[i]] = features1[:, i]
+def append_columns(all_features, file_dir, moods):
+    all_features['file'] = file_dir
+    all_features['mood'] = moods
+    for i in range(len(col_name)):
+        all_features[col_name[i]] = all_features[:, i]
+    return all_features
 
-feature1.to_excel(writer, sheet_name = 'all')
-
-for col in col_name:
-    feature = feature1[col]
-    feature = feature.to_frame()
+def remove_outlier(feature, col):
     Q1 = feature[col].quantile(0.25)
     Q3 = feature[col].quantile(0.75)
     IQR = Q3 - Q1
@@ -94,6 +93,37 @@ for col in col_name:
     lower_array = np.where(feature[col]<=lower)[0]
     feature.drop(index=upper_array, inplace=True)
     feature.drop(index=lower_array, inplace=True)
-    feature.to_excel(writer, sheet_name = col)
+    return feature
+
+def write_each_feature(all_features, writer):
+    for col in col_name:
+        feature = all_features[col]
+        feature = feature.to_frame()
+        feature = remove_outlier(feature, col)
+        feature.to_excel(writer, sheet_name = col)
+
+def write_all_features():
     
-writer.close()
+    for mood in mood_list:
+
+        writer = pd.ExcelWriter("gen_" + mood + ".xlsx", engine = 'xlsxwriter')
+
+        dir = "gen_music/" + mood
+    
+        file_dir, size = get_music_files(dir)
+    
+        all_features = extract_features(file_dir, size)
+        all_features = pd.DataFrame()
+    
+        moods = get_moods(len(file_dir), mood)
+    
+        all_features = append_columns(all_features, file_dir, moods)
+    
+        all_features.to_excel(writer, sheet_name = 'all')
+
+        write_each_feature(all_features, writer)
+    
+        writer.close()
+
+
+

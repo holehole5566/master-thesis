@@ -30,33 +30,35 @@ def cal_kl_div(gt_data, obs_data):
     kl_div = round(sum(kl_div),4)
     return kl_div
 
-moods = ["happy", "relaxed", "sad", "angry"]
-features = ["tempo", "rms_mean", "stft_pitches_mean", "zcr_mean"]
-for feature in features:
-    result = []
-    for mood_or in moods:
-        result_row = []
-        for mood_gen in moods:
-            
-            gen_file = "gen_" + mood_gen + ".xlsx"
-            original_file = mood_or + ".xlsx"
+def print_kl_result(gt_file, obs_file):
 
-            df_original = pd.read_excel(original_file, sheet_name = feature)
-            df_generated = pd.read_excel(gen_file, sheet_name = feature)
+    moods = ["happy", "relaxed", "sad", "angry"]
+    features = ["tempo", "rms_mean", "stft_pitches_mean", "zcr_mean"]
+    for feature in features:
+        result = []
+        for mood_or in moods:
+            result_row = []
+            for mood_gen in moods:
             
-            gt_data, obs_data = data_length_normalizer(
-                gt_data = df_original[feature], # ground truth data
-                obs_data = df_generated[feature] # observed data
-            )
+                gen_file = "gen_" + mood_gen + ".xlsx"
+                original_file = mood_or + ".xlsx"
+
+                df_original = pd.read_excel(original_file, sheet_name = feature)
+                df_generated = pd.read_excel(gen_file, sheet_name = feature)
+            
+                gt_data, obs_data = data_length_normalizer(
+                    gt_data = df_original[feature], # ground truth data
+                    obs_data = df_generated[feature] # observed data
+                )
            
-            kl_div = cal_kl_div(gt_data, obs_data)
+                kl_div = cal_kl_div(gt_data, obs_data)
             
-            result_row.append(kl_div)
+                result_row.append(kl_div)
         
-        result.append(result_row)
+            result.append(result_row)
 
-    print(feature + ":")
-    print(result)
+        print(feature + ":")
+        print(result)
 
     
         
