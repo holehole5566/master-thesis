@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns 
 from scipy import special
 
-def data_length_normalizer(gt_data, obs_data, bins = 10):
+def data_length_normalizer(gt_data, obs_data, bins = 100):
 
     if len(gt_data) == len(obs_data):
         return gt_data, obs_data 
