@@ -61,7 +61,6 @@ def get_music_files(dir):
         if(audio[-3:] == 'wav' or audio[-3:] == 'mp3'):
             fn=os.path.join(dir,audio)
             file_dir.append(fn)
-            print(count, fn)
     return file_dir, count
 
 def extract_features(file_dir, size):
@@ -72,16 +71,16 @@ def extract_features(file_dir, size):
 
 def get_moods(size, mood):
     moods = []
-    for i in range(len(file_dir)):
+    for i in range(size):
         moods.append(mood)
     return moods
 
-def append_columns(all_features, file_dir, moods):
-    all_features['file'] = file_dir
-    all_features['mood'] = moods
+def append_columns(all_features, file_dir, moods, all_features_result):
+    all_features_result['file'] = file_dir
+    all_features_result['mood'] = moods
     for i in range(len(col_name)):
-        all_features[col_name[i]] = all_features[:, i]
-    return all_features
+        all_features_result[col_name[i]] = all_features[:, i]
+    return all_features_result
 
 def remove_outlier(feature, col):
     Q1 = feature[col].quantile(0.25)
@@ -102,28 +101,34 @@ def write_each_feature(all_features, writer):
         feature = remove_outlier(feature, col)
         feature.to_excel(writer, sheet_name = col)
 
-def write_all_features():
+def write_all_features(ground_truth):
     
     for mood in mood_list:
+        if ground_truth:
+            writer = pd.ExcelWriter(mood + ".xlsx", engine = 'xlsxwriter')
+            dir = "groundtruth/" + mood
+        else:
+            writer = pd.ExcelWriter("gen_" + mood + ".xlsx", engine = 'xlsxwriter')
+            dir = "generated/" + mood
 
-        writer = pd.ExcelWriter("gen_" + mood + ".xlsx", engine = 'xlsxwriter')
-
-        dir = "gen_music/" + mood
-    
         file_dir, size = get_music_files(dir)
-    
+        print("get music files done")
         all_features = extract_features(file_dir, size)
-        all_features = pd.DataFrame()
+        print("extract features done")
+        all_features_result = pd.DataFrame()
     
         moods = get_moods(len(file_dir), mood)
     
-        all_features = append_columns(all_features, file_dir, moods)
-    
-        all_features.to_excel(writer, sheet_name = 'all')
+        all_features_result = append_columns(all_features, file_dir, moods, all_features_result)
+        print("append columns done")
+        all_features_result.to_excel(writer, sheet_name = 'all')
 
-        write_each_feature(all_features, writer)
+        write_each_feature(all_features_result, writer)
     
         writer.close()
 
+
+
+write_all_features(True)
 
 
