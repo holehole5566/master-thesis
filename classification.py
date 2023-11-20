@@ -6,7 +6,7 @@ from collections import defaultdict
 feature_classes = [['fast rhythm','slow rhythm'],['high pitch','low pitch'],['loud intensity','soft intensity'],['bright timbre','mellow timbre']]
 eval_classes = [['high arousal','low arousal'],['positive valence','negative valence']]
 
-result_dict = {}
+result_dict = defaultdict(float)
 prompt = 'music with '
 
 n = 251
@@ -20,9 +20,7 @@ for classes in feature_classes:
     
     print(class_prompts)
     
-    result = defaultdict(float)
-    
-    for i in range(n):
+    for i in range(0, n, 3):
 
         audio_files = []
         music = 'music/music (' + str(i+1) + ').mp3'
@@ -45,10 +43,10 @@ for classes in feature_classes:
 
         for value, index in zip(values, indices):
              #print(f"{classes[index]:>16s}: {100 * value.item():.2f}%")
-            result[classes[index]] += 100 * value.item()
+            result_dict[classes[index]] += 100 * value.item()
         print("{}th music finish".format(i+1))
     
-    for k, v in result.items():
+for k, v in result_dict.items():
         result_dict[k] = round(v/n, 2)
     
 with open("result.json", 'w') as f:
