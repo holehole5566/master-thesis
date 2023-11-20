@@ -51,5 +51,5 @@ for classes in feature_classes:
     for k, v in result.items():
         result_dict[k] = round(v/n, 2)
     
-with open("python2json.json", 'w') as f:
-  json.dump(result_json, f)
+with open("result.json", 'w') as f:
+  json.dump(result_dict, f)
