@@ -12,7 +12,7 @@ def generate_audio():
     pipe = pipe.to("cuda")
     pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
     negative_prompt = "Low quality, average quality."
-    prompt = "The sound of Brazilian samba drums with waves gently crashing in the background"
+    prompt = "Craft a composition with haunting melodies, gentle yet mournful harmonies, and a lingering, melancholic atmosphere that resonates with profound sorrow and longing."
 
     generator = torch.Generator("cuda").manual_seed(0)
 
