@@ -18,7 +18,7 @@ def get_audio_files_gt(n):
 def get_audio_files_generated(n):
     audio_files = []
     for i in range(n):
-        music = f'generated/music ({i+1}).mp3'
+        music = f'generated/{i}.mp3'
         audio_files.append(music)
     return audio_files
 
@@ -58,17 +58,17 @@ def feature():
 
 def eval():
     eval_classes = [['high arousal', 'low arousal'], ['positive valence', 'negative valence']]
-    result_dict = defaultdict(float)
     prompt = 'music with '
     result_list = []
     num_music = 3
     audio_files = get_audio_files_generated(num_music)
     for i in range(len(audio_files)):
+            result_dict = defaultdict(float)
+            audio_file = []
+            audio_file.append(audio_files[i])
             for classes in eval_classes:
                 class_prompts = [prompt + desc for desc in classes]
                 print(class_prompts)
-                audio_file = []
-                audio_file.append(audio_files[i])
                 similarity = process_audio_files(audio_file, class_prompts)
                 similarity = F.softmax(similarity, dim=1)
                 values, indices = similarity[0].topk(2)
@@ -77,6 +77,7 @@ def eval():
                 for k, v in result_dict.items():
                     result_dict[k] = round(v , 2)
             result_list.append(result_dict)
+            print(f"{i+1}th music finish")
     
     results = {
         "results": result_list
@@ -87,5 +88,5 @@ def eval():
         json.dump(results, f)
 
 if __name__ == "__main__":
-    feature()
-    #eval()
+    #feature()
+    eval()
