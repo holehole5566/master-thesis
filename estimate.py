@@ -1,6 +1,5 @@
 import json
 
-
 def main():
     quadrant = "Q1"
     x = []
