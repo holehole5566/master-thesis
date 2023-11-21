@@ -6,6 +6,8 @@ def main():
     quad_settings = {
         "Q1" : ("red", "Q1"),
         "Q2" : ("blue", "Q2"),
+        "Q3" : ("green", "Q3"),
+        "Q4" : ("yellow", "Q4")
     }
     # Creating the plot and defining the four quadrants
     fig, ax = plt.subplots()
