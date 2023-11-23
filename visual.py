@@ -2,12 +2,12 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 def main():
-    quads = ["Q1", "Q2"]
+    quads = ["Q1_gpt","Q1_feature","Q1_raw"]
     quad_settings = {
-        "Q1" : ("red", "Q1"),
-        "Q2" : ("blue", "Q2"),
-        "Q3" : ("green", "Q3"),
-        "Q4" : ("yellow", "Q4")
+        "Q1_gpt" : ("red", "Q1"),
+        "Q1_feature" : ("blue", "Q1_gen"),
+        "Q1_raw" : ("green", "Q1_raw"),
+        "Q1_11" : ("yellow", "Q4")
     }
     # Creating the plot and defining the four quadrants
     fig, ax = plt.subplots()

@@ -1,7 +1,7 @@
 import json
 
 def main():
-    quadrant = "Q1"
+    quadrant = "Q1_gen"
     x = []
     y = []
     with open("result_generated.json", "r") as f:

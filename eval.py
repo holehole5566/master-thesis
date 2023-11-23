@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 import torch.nn.functional as F
-from classification import process_audio_files
+from feature import process_audio_files
 
 def get_audio_files_generated(n):
     audio_files = []
@@ -14,7 +14,7 @@ def eval():
     eval_classes = [['high arousal', 'low arousal'], ['positive valence', 'negative valence']]
     prompt = 'music with '
     result_list = []
-    num_music = 3
+    num_music = 250
     audio_files = get_audio_files_generated(num_music)
     for i in range(len(audio_files)):
             result_dict = defaultdict(float)
