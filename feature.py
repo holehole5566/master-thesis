@@ -46,7 +46,7 @@ def feature():
     for k, v in result_dict.items():
         result_dict[k] = round(v / len(audio_files), 2)
 
-    with open("result.json", 'w') as f:
+    with open("feature_result.json", 'w') as f:
         json.dump(result_dict, f)
 
 if __name__ == "__main__":

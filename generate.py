@@ -2,6 +2,7 @@ from diffusers import AudioLDM2Pipeline, DPMSolverMultistepScheduler
 import torch
 import scipy
 
+
 def generate_audio():
     # Constants
     NUM_GENERATIONS = 250
@@ -12,7 +13,7 @@ def generate_audio():
     pipe = pipe.to("cuda")
     pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
     negative_prompt = "Low quality, average quality."
-    prompt = "a music with angry mood."
+    prompt = "a melancholic melody that captures the haunting beauty of fading memories and lost dreams."
 
     generator = torch.Generator("cuda").manual_seed(0)
 
