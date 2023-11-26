@@ -5,7 +5,7 @@ import scipy
 
 def generate_audio():
     # Constants
-    NUM_GENERATIONS = 250
+    NUM_GENERATIONS = 225
     SAMPLE_RATE = 16000
 
     repo_id = "cvssp/audioldm2"
@@ -13,7 +13,7 @@ def generate_audio():
     pipe = pipe.to("cuda")
     pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
     negative_prompt = "Low quality, average quality."
-    prompt = "a melancholic melody that captures the haunting beauty of fading memories and lost dreams."
+    prompt = "a serene piece with a slow, unhurried rhythm, slightly lower in pitch, maintaining a medium intensity, and utilizing a bright, resonant timbre reminiscent of a peaceful forest."
 
     generator = torch.Generator("cuda").manual_seed(0)
 
